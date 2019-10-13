@@ -5,7 +5,7 @@ import queue.Document;
 public class ElasticSearchShardingFunction implements ShardingFunction {
     private int totalShards;
 
-    ElasticSearchShardingFunction(int totalShards) {
+    public ElasticSearchShardingFunction(int totalShards) {
         this.totalShards = totalShards;
     }
 
@@ -14,6 +14,7 @@ public class ElasticSearchShardingFunction implements ShardingFunction {
     }
 
     public int getShard(Document d) {
-        return Murmur3HashFunction.hash(d.getShardingKey()) % totalShards;
+        int possiblyNegative = Murmur3HashFunction.hash(d.getShardingKey()) % totalShards;
+        return (possiblyNegative + totalShards) % totalShards;
     }
 }
